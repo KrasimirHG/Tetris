@@ -1,0 +1,82 @@
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, inital-scale=1.0" />
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+		<title>Tetris</title>
+		<link rel="stylesheet" href="style.css" />
+		<script src="index.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row menu">
+				<div class="col-12 col-sm-6 col-md-3 color-choice">
+					<h3>Choose color for player 1</h3>
+					<input
+						autocomplete="off"
+						id="color1"
+						type="color"
+						value="#ff0000"
+						onchange="console.log(this.value)"
+					/>
+				</div>
+				<div class="col-12 col-sm-6 col-md-3 color-choice">
+					<h3>Choose color for player 2</h3>
+					<input
+						autocomplete="off"
+						id="color2"
+						type="color"
+						value="#0000ff"
+					/>
+				</div>
+				<div class="col-12 col-sm-6 col-md-3 dimensions">
+					<h3>Choose numbers of columns</h3>
+					<input
+						autocomplete="off"
+						id="dim-x"
+						type="number"
+						value="10"
+					/>
+				</div>
+				<div class="col-12 col-sm-6 col-md-3 dimensions">
+					<h3>Choose numbers of rows</h3>
+					<input
+						autocomplete="off"
+						id="dim-y"
+						type="number"
+						value="15"
+					/>
+				</div>
+			</div>
+			<div class="start">
+				<button class="btn btn-danger" id="newGame">
+					Start New Game
+				</button>
+			</div>
+			<div class="stat">
+				<!-- <h3>
+					The current Player is: Player
+					<span id="current-player">1</span>
+				</h3> -->
+				<h3 id="result"></h3>
+			</div>
+
+			<div class="grid"></div>
+			<div class="rules">
+				<h2>Rules :</h2>
+				<p>
+					The game simulate the Connect Four game.The player drop a
+					pull from the top and pull fall as down as posible.The
+					player who first make a line of four in row, column or
+					diagonal win.
+				</p>
+			</div>
+		</div>
+	</body>
+</html>
