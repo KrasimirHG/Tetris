@@ -1,11 +1,11 @@
-window.onload = function() {
+window.onload = function () {
 	const grid = document.querySelector(".grid");
 
 	const startButton = document.querySelector("#newGame");
 	const y = parseInt(document.querySelector("#dim-y").value);
 	const x = parseInt(document.querySelector("#dim-x").value);
-	let currentIndex = Math.floor(x / 2);
-	console.log("current index is ", currentIndex);
+	let currentPosition = Math.floor(x / 2 - 1);
+	//console.log("current index is ", currentPosition);
 	let currentRotation = 0;
 	const colors = [
 		"url(blue_block.png)",
@@ -15,12 +15,14 @@ window.onload = function() {
 		"url(peach_block.png)",
 		"url(yellow_block.png)",
 	];
+	let timer;
+	let currentIndex = 0;
 
 	function createBoard() {
 		const y = parseInt(document.querySelector("#dim-y").value);
-		console.log("redovete sa: ", y);
+		//console.log("redovete sa: ", y);
 		const x = parseInt(document.querySelector("#dim-x").value);
-		console.log("colonite sa: ", x);
+		//console.log("colonite sa: ", x);
 		let wid = 20 * x;
 		let hei = 20 * y;
 		grid.style.width = wid;
@@ -97,47 +99,62 @@ window.onload = function() {
 
 	//Select random tetramino
 	let random = Math.floor(Math.random() * theTetrominoes.length);
+	console.log("random is ", random);
 	//Select current rotation
 	let current = theTetrominoes[random][currentRotation];
+	console.log("current is ", current);
+	let color = Math.floor(Math.random() * colors.length);
+	// console.log(color);
 
 	//draw the tetramino
 	function draw() {
-		console.log(current);
-		let color = Math.floor(Math.random() * colors.length);
-		console.log(color);
-		for (let i = 0; i < current.length; i++) {
-			squares[i + currentIndex].classList.add("block");
-			squares[i + currentIndex].style.backgroundImage = colors[color];
-		}
+		//console.log(current);
+
+		// for (let i = 0; i < current.length; i++) {
+		// 	squares[i + currentPosition].classList.add("block");
+		// 	squares[i + currentPosition].style.backgroundImage = colors[color];
+		// }
+		current.forEach((index) => {
+			squares[currentPosition + index].classList.add("block");
+			squares[currentPosition + index].style.backgroundImage =
+				colors[color];
+		});
 	}
 
 	//erase tetramino
 	function erase() {
 		for (let i = 0; i < current.length; i++) {
-			squares[i + currentIndex].classList.remove("block");
-			squares[i + currentIndex].style.backgroundImage = "none";
+			squares[i + currentPosition].classList.remove("block");
+			squares[i + currentPosition].style.backgroundImage = "none";
 		}
 	}
 
-	draw();
+	// draw();
 	// setTimeout(erase, 2000);
 
 	function moveRight() {
 		erase();
-		function isRightEdge(index) {
-			return (index + currentIndex) % x === x - 1;
+		// function isRightEdge(index) {
+
+		// 	return (index + currentPosition) % x === x - 1;
+		// }
+
+		// const rightEdge = current.some(isRightEdge);
+		// console.log("rightEdge : ", rightEdge);
+		let rightEdge = false;
+		for (let i = 0; i < current.length; i++) {
+			if ((i + currentPosition) % x === x - 1) rightEdge = true;
 		}
-		const rightEdge = current.some(isRightEdge);
-		console.log("rightEdge : ", rightEdge);
+		//console.log("rightEdge : ", rightEdge);
 		if (!rightEdge) {
-			currentIndex++;
+			currentPosition++;
 		}
 		if (
 			current.some((index) =>
-				squares[currentIndex + index].classList.contains("block2")
+				squares[currentPosition + index].classList.contains("block2")
 			)
 		) {
-			currentIndex -= 1;
+			currentPosition -= 1;
 		}
 		draw();
 	}
@@ -145,23 +162,23 @@ window.onload = function() {
 	function moveLeft() {
 		erase();
 		// const leftEdge = current.some((index) => {
-		// 	(index + currentIndex) % x === 0;
+		// 	(index + currentPosition) % x === 0;
 
 		// });
 		function isLeftEdge(index) {
-			return (index + currentIndex) % x === 0;
+			return (index + currentPosition) % x === 0;
 		}
 		const leftEdge = current.some(isLeftEdge);
-		console.log("leftEdge : ", leftEdge);
+
 		if (!leftEdge) {
-			currentIndex--;
+			currentPosition--;
 		}
 		if (
 			current.some((index) =>
-				squares[currentIndex + index].classList.contains("block2")
+				squares[currentPosition + index].classList.contains("block2")
 			)
 		) {
-			currentIndex += 1;
+			currentPosition += 1;
 		}
 		draw();
 	}
@@ -169,12 +186,26 @@ window.onload = function() {
 	function rotate() {
 		erase();
 		currentRotation++;
+		if (currentRotation === current.length) {
+			currentRotation = 0;
+		}
+		current = theTetrominoes[random][currentRotation];
+		console.log(current);
 		draw();
 	}
 
 	function moveDown() {
 		erase();
-		currentIndex += x;
+		currentPosition += x;
 		draw();
 	}
+
+	startButton.addEventListener("click", () => {
+		if (timer) {
+			clearInterval(timer);
+			timer = null;
+		} else {
+			interval = setInterval(moveDown, 1000);
+		}
+	});
 };
