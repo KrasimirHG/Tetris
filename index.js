@@ -48,6 +48,8 @@ window.onload = function () {
 		else if (e.keyCode === 38 || e.keyCode === 82) rotate();
 		else if (e.keyCode === 37) moveLeft();
 		else if (e.keyCode === 40) moveDown();
+		else if (e.keyCode === 68) draw();
+		else if (e.keyCode === 69) erase();
 	}
 
 	// the classical behavior is to speed up the block if down button is kept pressed so doing that
@@ -123,10 +125,14 @@ window.onload = function () {
 
 	//erase tetramino
 	function erase() {
-		for (let i = 0; i < current.length; i++) {
-			squares[i + currentPosition].classList.remove("block");
-			squares[i + currentPosition].style.backgroundImage = "none";
-		}
+		// for (let i = 0; i < current.length; i++) {
+		// 	squares[i + currentPosition].classList.remove("block");
+		// 	squares[i + currentPosition].style.backgroundImage = "none";
+		// }
+		current.forEach((index) => {
+			squares[currentPosition + index].classList.remove("block");
+			squares[currentPosition + index].style.backgroundImage = "none";
+		});
 	}
 
 	// draw();
@@ -134,17 +140,16 @@ window.onload = function () {
 
 	function moveRight() {
 		erase();
-		// function isRightEdge(index) {
-
-		// 	return (index + currentPosition) % x === x - 1;
-		// }
-
-		// const rightEdge = current.some(isRightEdge);
-		// console.log("rightEdge : ", rightEdge);
-		let rightEdge = false;
-		for (let i = 0; i < current.length; i++) {
-			if ((i + currentPosition) % x === x - 1) rightEdge = true;
+		function isRightEdge(index) {
+			return (index + currentPosition) % x === x - 1;
 		}
+
+		const rightEdge = current.some(isRightEdge);
+		// console.log("rightEdge : ", rightEdge);
+		// let rightEdge = false;
+		// for (let i = 0; i < current.length; i++) {
+		// 	if ((i + currentPosition) % x === x - 1) rightEdge = true;
+		// }
 		//console.log("rightEdge : ", rightEdge);
 		if (!rightEdge) {
 			currentPosition++;
@@ -197,7 +202,33 @@ window.onload = function () {
 	function moveDown() {
 		erase();
 		currentPosition += x;
+		console.log("currentPosition is", currentPosition);
 		draw();
+		freeze();
+	}
+
+	function freeze() {
+		if (
+			current.some(
+				(index) =>
+					squares[currentPosition + index + x].classList.contains(
+						"block3"
+					) ||
+					squares[currentPosition + index + x].classList.contains(
+						"block2"
+					)
+			)
+		) {
+			console.log("freeze");
+			current.forEach((index) =>
+				squares[currentPosition + index].classList.add("block2")
+			);
+
+			random = Math.floor(Math.random() * theTetrominoes.length);
+			current = theTetrominoes[random][currentRotation];
+			currentPosition = Math.floor(x / 2 - 1);
+			draw();
+		}
 	}
 
 	startButton.addEventListener("click", () => {
@@ -208,4 +239,6 @@ window.onload = function () {
 			interval = setInterval(moveDown, 1000);
 		}
 	});
+
+	//startButton.addEventListener("click", moveDown);
 };
