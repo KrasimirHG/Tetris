@@ -1,11 +1,11 @@
-window.onload = function () {
+window.onload = function() {
 	const grid = document.querySelector(".grid");
 
 	const startButton = document.querySelector("#newGame");
 	const y = parseInt(document.querySelector("#dim-y").value);
 	const x = parseInt(document.querySelector("#dim-x").value);
 	let currentPosition = Math.floor(x / 2 - 1);
-	//console.log("current index is ", currentPosition);
+
 	let currentRotation = 0;
 	const colors = [
 		"url(blue_block.png)",
@@ -16,13 +16,16 @@ window.onload = function () {
 		"url(yellow_block.png)",
 	];
 	let timer;
+	const result = document.querySelector("#result");
 	let currentIndex = 0;
+	const row = [];
+	let score = 0;
 
 	function createBoard() {
 		const y = parseInt(document.querySelector("#dim-y").value);
-		//console.log("redovete sa: ", y);
+
 		const x = parseInt(document.querySelector("#dim-x").value);
-		//console.log("colonite sa: ", x);
+
 		let wid = 20 * x;
 		let hei = 20 * y;
 		grid.style.width = wid;
@@ -106,16 +109,9 @@ window.onload = function () {
 	let current = theTetrominoes[random][currentRotation];
 	console.log("current is ", current);
 	let color = Math.floor(Math.random() * colors.length);
-	// console.log(color);
 
 	//draw the tetramino
 	function draw() {
-		//console.log(current);
-
-		// for (let i = 0; i < current.length; i++) {
-		// 	squares[i + currentPosition].classList.add("block");
-		// 	squares[i + currentPosition].style.backgroundImage = colors[color];
-		// }
 		current.forEach((index) => {
 			squares[currentPosition + index].classList.add("block");
 			squares[currentPosition + index].style.backgroundImage =
@@ -125,18 +121,11 @@ window.onload = function () {
 
 	//erase tetramino
 	function erase() {
-		// for (let i = 0; i < current.length; i++) {
-		// 	squares[i + currentPosition].classList.remove("block");
-		// 	squares[i + currentPosition].style.backgroundImage = "none";
-		// }
 		current.forEach((index) => {
 			squares[currentPosition + index].classList.remove("block");
 			squares[currentPosition + index].style.backgroundImage = "none";
 		});
 	}
-
-	// draw();
-	// setTimeout(erase, 2000);
 
 	function moveRight() {
 		erase();
@@ -145,12 +134,7 @@ window.onload = function () {
 		}
 
 		const rightEdge = current.some(isRightEdge);
-		// console.log("rightEdge : ", rightEdge);
-		// let rightEdge = false;
-		// for (let i = 0; i < current.length; i++) {
-		// 	if ((i + currentPosition) % x === x - 1) rightEdge = true;
-		// }
-		//console.log("rightEdge : ", rightEdge);
+
 		if (!rightEdge) {
 			currentPosition++;
 		}
@@ -166,10 +150,7 @@ window.onload = function () {
 
 	function moveLeft() {
 		erase();
-		// const leftEdge = current.some((index) => {
-		// 	(index + currentPosition) % x === 0;
 
-		// });
 		function isLeftEdge(index) {
 			return (index + currentPosition) % x === 0;
 		}
@@ -228,6 +209,39 @@ window.onload = function () {
 			current = theTetrominoes[random][currentRotation];
 			currentPosition = Math.floor(x / 2 - 1);
 			draw();
+			score();
+			gameOver();
+		}
+	}
+
+	//Game Over
+	function gameOver() {
+		if (
+			current.some((index) =>
+				squares[currentPosition + index].classList.contains("block2")
+			)
+		) {
+			result.innerHTML = "Game Over";
+			clearInterval(timer);
+		}
+	}
+
+	function score() {
+		for (currentIndex = 0; currentIndex < x * y; currentIndex += x) {
+			for (let i = 0; i < x; i++) {
+				row.push(currentIndex + i);
+			}
+			if (
+				row.every((index) =>
+					squares[index].classList.contains("block2")
+				)
+			) {
+				score += 10;
+				row.forEach((index) => {
+					squares[index].style.backgroundImage = "none";
+					squares[index].classList.remove("block2");
+				});
+			}
 		}
 	}
 
@@ -239,6 +253,4 @@ window.onload = function () {
 			interval = setInterval(moveDown, 1000);
 		}
 	});
-
-	//startButton.addEventListener("click", moveDown);
 };
